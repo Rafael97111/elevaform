@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElevaForm — Bien-être · Rééducation · Performance</title>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap');
+
+  :root {
+    --marron: #6B4C3B;
+    --marron-fonce: #4A3228;
+    --marron-clair: #C4A882;
+    --beige: #F5EFE8;
+    --beige-fonce: #EDE5DC;
+    --or: #C8A870;
+    --gris: #C8C4BE;
+    --noir: #0D0D0D;
+    --blanc: #FDFAF6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--blanc);
+    color: var(--noir);
+    overflow-x: hidden;
+  }
+
+  /* ===================== LANGUE ===================== */
+  [data-lang="en"] { display: none; }
+  body.en [data-lang="fr"] { display: none; }
+  body.en [data-lang="en"] { display: block; }
+  body.en span[data-lang="en"] { display: inline; }
+  body.en span[data-lang="fr"] { display: none; }
+  span[data-lang="en"] { display: none; }
+
+  /* ===================== HEADER ===================== */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 48px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(253, 250, 246, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid rgba(200, 168, 112, 0.3);
+  }
+
+  .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .logo-icon { width: 38px; height: 38px; }
+  .logo-text { display: flex; flex-direction: column; gap: 1px; }
+  .logo-name { font-size: 15px; font-weight: 500; letter-spacing: 3px; color: var(--marron-fonce); }
+  .logo-sub { font-size: 7px; letter-spacing: 1.2px; color: var(--marron-clair); font-weight: 300; }
+
+  .nav-desktop { display: flex; align-items: center; gap: 32px; }
+
+  .nav-desktop a {
+    font-size: 12px; letter-spacing: 2px; font-weight: 400;
+    color: var(--marron-fonce); text-decoration: none;
+    text-transform: uppercase; transition: color 0.3s;
+  }
+  .nav-desktop a:hover { color: var(--or); }
+
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+
+  .rdv-btn {
+    background: var(--marron); color: var(--blanc) !important;
+    padding: 10px 20px; border-radius: 2px; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+    transition: background 0.3s; white-space: nowrap;
+  }
+  .rdv-btn:hover { background: var(--marron-fonce) !important; }
+
+  .lang-switcher {
+    display: flex; align-items: center;
+    border: 1px solid var(--or); border-radius: 20px; overflow: hidden;
+  }
+  .lang-switcher button {
+    background: none; border: none; padding: 6px 13px;
+    font-size: 11px; font-family: 'Jost', sans-serif; font-weight: 500;
+    letter-spacing: 1px; cursor: pointer; color: var(--marron-fonce);
+    transition: all 0.25s; line-height: 1;
+  }
+  .lang-switcher button.active { background: var(--or); color: #fff; }
+  .lang-switcher button:not(.active):hover { background: var(--beige-fonce); }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 4px; background: none; border: none;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 1.5px;
+    background: var(--marron-fonce); transition: all 0.3s; transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-mobile {
+    display: none; position: fixed;
+    top: 72px; left: 0; right: 0;
+    background: rgba(253, 250, 246, 0.98);
+    backdrop-filter: blur(16px);
+    border-bottom: 0.5px solid rgba(200, 168, 112, 0.3);
+    flex-direction: column; padding: 24px 32px 32px;
+    z-index: 99; opacity: 0; transition: opacity 0.3s;
+  }
+  .nav-mobile.open { display: flex; opacity: 1; }
+  .nav-mobile a {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--marron-fonce); text-decoration: none;
+    padding: 16px 0; border-bottom: 0.5px solid rgba(200, 168, 112, 0.2);
+    transition: color 0.3s;
+  }
+  .nav-mobile a:hover { color: var(--or); }
+  .mobile-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; }
+  .rdv-btn-mobile {
+    background: var(--marron); color: var(--blanc); padding: 12px 28px;
+    border-radius: 2px; font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none;
+  }
+
+  /* ===================== HERO ===================== */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--marron-clair) 0%, var(--marron) 45%, var(--marron-fonce) 100%);
+  }
+
+  .hero-pattern {
+    position: absolute; inset: 0; opacity: 0.1;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(255,255,255,0.15) 40px, rgba(255,255,255,0.15) 41px
+    );
+  }
+
+  .hero-ef {
+    position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+    font-family: 'Cormorant Garamond', serif; font-size: 420px; font-weight: 600;
+    color: rgba(255,255,255,0.04); letter-spacing: -20px; line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+
+
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 120px 48px 100px;
+    width: 100%; max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero-tag {
+    display: inline-block; font-size: 11px; letter-spacing: 3px;
+    color: var(--or); text-transform: uppercase; margin-bottom: 32px;
+    padding-bottom: 14px; border-bottom: 0.5px solid var(--or);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 86px; font-weight: 300;
+    line-height: 1.05; color: var(--blanc); margin-bottom: 32px; letter-spacing: -1px;
+  }
+  .hero-title em { font-style: italic; color: var(--or); }
+
+  .hero-desc {
+    font-size: 16px; line-height: 1.9; color: rgba(253, 250, 246, 0.75);
+    font-weight: 300; letter-spacing: 0.5px;
+    max-width: 560px; margin: 0 auto 52px;
+  }
+
+  .hero-actions { display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--or); color: var(--marron-fonce);
+    padding: 18px 42px; font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; font-weight: 500; border: none;
+    cursor: pointer; border-radius: 2px; transition: all 0.3s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--blanc); transform: translateY(-2px); }
+
+  .btn-secondary {
+    color: rgba(253, 250, 246, 0.7); font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none;
+    border-bottom: 0.5px solid rgba(253, 250, 246, 0.3);
+    padding-bottom: 2px; transition: all 0.3s;
+  }
+  .btn-secondary:hover { color: var(--blanc); border-color: var(--blanc); }
+
+  /* ===================== DÉGRADÉS ENTRE SECTIONS ===================== */
+  .grad-beige-to-blanc {
+    height: 80px;
+    background: linear-gradient(to bottom, var(--beige), var(--blanc));
+  }
+  .grad-blanc-to-marron {
+    height: 80px;
+    background: linear-gradient(to bottom, var(--blanc), var(--marron));
+  }
+  .grad-marron-to-beige {
+    height: 80px;
+    background: linear-gradient(to bottom, var(--marron), var(--beige));
+  }
+  .grad-beige-to-marron-fonce {
+    height: 80px;
+    background: linear-gradient(to bottom, var(--beige), var(--marron-fonce));
+  }
+
+  /* ===================== SECTION HEADER COMMUN ===================== */
+  .section-header { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 72px; }
+  .section-tag { font-size: 11px; letter-spacing: 3px; color: var(--or); text-transform: uppercase; margin-bottom: 20px; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300;
+    color: var(--marron-fonce); line-height: 1.15; letter-spacing: -0.5px;
+  }
+  .section-title em { font-style: italic; color: var(--or); }
+  .section-title-light {
+    font-family: 'Cormorant Garamond', serif; font-size: 54px; font-weight: 300;
+    color: var(--blanc); line-height: 1.15; letter-spacing: -0.5px;
+  }
+  .section-title-light em { font-style: italic; color: var(--or); }
+  .section-divider { width: 48px; height: 0.5px; background: var(--or); margin: 24px auto 0; }
+
+  /* ===================== POURQUOI ===================== */
+  .pourquoi { background: var(--beige); padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .pourquoi::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,168,112,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 1100px; margin: 0 auto; }
+
+  .card {
+    background: var(--blanc); border: 0.5px solid rgba(200, 168, 112, 0.25);
+    border-radius: 4px; padding: 52px 40px; position: relative;
+    overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(74,50,40,0.08); }
+  .card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--or), var(--marron-clair));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .card:hover::after { opacity: 1; }
+
+  .card-number {
+    font-family: 'Cormorant Garamond', serif; font-size: 72px; font-weight: 300;
+    color: var(--or); line-height: 1; margin-bottom: 24px; letter-spacing: -2px;
+  }
+  .card-title { font-size: 14px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--marron-fonce); margin-bottom: 16px; }
+  .card-line { width: 32px; height: 0.5px; background: var(--or); margin-bottom: 16px; }
+  .card-desc { font-size: 14px; line-height: 1.85; color: #7A6A5A; font-weight: 300; }
+
+  /* ===================== SERVICES ===================== */
+  .services { background: var(--marron); padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .services::before {
+    content: ''; position: absolute; bottom: -80px; left: -80px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,168,112,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; max-width: 1100px; margin: 0 auto; }
+
+  .service-block {
+    background: rgba(255,255,255,0.05); border: 0.5px solid rgba(200,168,112,0.2);
+    padding: 60px 52px; transition: background 0.3s;
+  }
+  .service-block:hover { background: rgba(200,168,112,0.08); }
+
+  .service-label {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--or);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .service-label::after { content: ''; flex: 1; height: 0.5px; background: rgba(200,168,112,0.3); }
+
+  .service-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300;
+    color: var(--blanc); margin-bottom: 36px; line-height: 1.2; letter-spacing: -0.5px;
+  }
+  .service-title em { font-style: italic; color: var(--or); }
+
+  .service-list { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+  .service-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: 14px; line-height: 1.7; color: rgba(253,250,246,0.75); font-weight: 300;
+  }
+  .service-list li::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--or); margin-top: 9px; flex-shrink: 0;
+  }
+
+  .service-cta {
+    margin-top: 44px; display: inline-block; font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--or); text-decoration: none;
+    border-bottom: 0.5px solid rgba(200,168,112,0.4); padding-bottom: 3px; transition: all 0.3s;
+  }
+  .service-cta:hover { color: var(--blanc); border-color: var(--blanc); }
+
+  /* ===================== COMMENT ===================== */
+  .comment { background: var(--beige); padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .comment::after {
+    content: ''; position: absolute; top: -80px; left: -80px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,168,112,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    max-width: 1100px; margin: 0 auto 52px; position: relative;
+  }
+  .steps::before {
+    content: ''; position: absolute; top: 36px;
+    left: calc(16.66% + 20px); right: calc(16.66% + 20px);
+    height: 0.5px; background: linear-gradient(90deg, var(--or), var(--marron-clair), var(--or));
+    z-index: 0;
+  }
+
+  .step { padding: 0 36px; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+  .step-number {
+    width: 72px; height: 72px; border-radius: 50%; background: var(--blanc);
+    border: 0.5px solid rgba(200,168,112,0.4); display: flex; align-items: center;
+    justify-content: center; margin-bottom: 36px; position: relative; z-index: 2; transition: all 0.3s;
+  }
+  .step:hover .step-number { background: var(--or); border-color: var(--or); }
+  .step-number span {
+    font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300;
+    color: var(--or); transition: color 0.3s;
+  }
+  .step:hover .step-number span { color: var(--blanc); }
+
+  .step-title { font-size: 13px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--marron-fonce); margin-bottom: 16px; }
+  .step-line { width: 32px; height: 0.5px; background: var(--or); margin: 0 auto 16px; }
+  .step-desc { font-size: 14px; line-height: 1.85; color: #7A6A5A; font-weight: 300; }
+
+  .deplacement {
+    max-width: 1100px; margin: 0 auto;
+    border: 0.5px solid rgba(200,168,112,0.35); border-radius: 4px;
+    padding: 32px 44px; display: flex; align-items: center; gap: 24px; background: var(--blanc);
+  }
+  .deplacement-icon { width: 36px; height: 36px; flex-shrink: 0; }
+  .deplacement-line { width: 0.5px; height: 36px; background: rgba(200,168,112,0.4); flex-shrink: 0; }
+  .deplacement-text { font-size: 14px; color: var(--marron-fonce); font-weight: 300; line-height: 1.6; }
+  .deplacement-text strong { font-weight: 500; }
+
+  /* ===================== CONTACT ===================== */
+  .contact { background: var(--blanc); padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .contact::before {
+    content: ''; position: absolute; bottom: -80px; right: -80px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,168,112,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; max-width: 1100px; margin: 0 auto; align-items: start; }
+  .contact-info { display: flex; flex-direction: column; gap: 40px; }
+  .contact-intro { font-size: 15px; line-height: 1.9; color: #7A6A5A; font-weight: 300; }
+  .contact-items { display: flex; flex-direction: column; gap: 24px; }
+  .contact-item { display: flex; align-items: flex-start; gap: 16px; }
+  .contact-item-icon {
+    width: 38px; height: 38px; border: 0.5px solid rgba(200,168,112,0.4);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .contact-item-icon svg { width: 14px; height: 14px; stroke: var(--or); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .contact-item-content { display: flex; flex-direction: column; gap: 3px; }
+  .contact-item-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--or); }
+  .contact-item-value { font-size: 14px; color: var(--marron-fonce); font-weight: 400; }
+  .contact-divider { width: 48px; height: 0.5px; background: rgba(200,168,112,0.3); }
+
+  .calendly-wrap { border: 0.5px solid rgba(200,168,112,0.25); border-radius: 4px; overflow: hidden; background: var(--beige); }
+  .calendly-inline-widget { min-width: 100%; height: 650px; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--or); }
+  .form-group input, .form-group textarea {
+    background: var(--beige); border: 0.5px solid rgba(200,168,112,0.3);
+    border-radius: 2px; padding: 13px 16px; font-family: 'Jost', sans-serif;
+    font-size: 14px; color: var(--marron-fonce); outline: none; transition: border-color 0.3s; width: 100%;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--or); }
+  .form-group textarea { resize: none; height: 110px; }
+
+  .btn-submit {
+    background: var(--marron); color: var(--blanc); padding: 15px 36px;
+    font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; font-weight: 500; border: none; cursor: pointer;
+    border-radius: 2px; transition: background 0.3s; align-self: flex-start;
+  }
+  .btn-submit:hover { background: var(--marron-fonce); }
+
+  .or-divider {
+    display: flex; align-items: center; gap: 16px;
+    color: #B0A090; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 0.5px; background: rgba(200,168,112,0.3); }
+
+  /* ===================== FOOTER ===================== */
+  footer { background: var(--marron-fonce); padding: 72px 48px 0; position: relative; overflow: hidden; }
+  footer::before {
+    content: ''; position: absolute; top: -100px; right: -100px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,168,112,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .footer-grid {
+    display: grid; grid-template-columns: 1.8fr 1fr 1fr; gap: 64px;
+    max-width: 1100px; margin: 0 auto; padding-bottom: 56px;
+    border-bottom: 0.5px solid rgba(200,168,112,0.15);
+  }
+  .footer-brand { display: flex; flex-direction: column; gap: 20px; }
+  .footer-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+  .footer-logo-icon { width: 40px; height: 40px; }
+  .footer-logo-text { display: flex; flex-direction: column; gap: 2px; }
+  .footer-logo-name { font-size: 14px; font-weight: 500; letter-spacing: 3px; color: var(--blanc); }
+  .footer-logo-sub { font-size: 7px; letter-spacing: 1.2px; color: var(--marron-clair); font-weight: 300; }
+  .footer-desc { font-size: 13px; line-height: 1.9; color: rgba(253,250,246,0.45); font-weight: 300; max-width: 280px; }
+  .footer-contact { display: flex; flex-direction: column; gap: 10px; }
+  .footer-contact a {
+    font-size: 13px; color: rgba(253,250,246,0.6); text-decoration: none;
+    font-weight: 300; transition: color 0.3s; display: flex; align-items: center; gap: 10px;
+  }
+  .footer-contact a:hover { color: var(--or); }
+  .footer-contact a::before { content: ''; width: 16px; height: 0.5px; background: var(--or); flex-shrink: 0; }
+  .footer-col-title { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--or); margin-bottom: 24px; }
+  .footer-nav { display: flex; flex-direction: column; gap: 14px; }
+  .footer-nav a {
+    font-size: 13px; color: rgba(253,250,246,0.55); text-decoration: none;
+    font-weight: 300; letter-spacing: 0.5px; transition: color 0.3s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-nav a:hover { color: var(--or); }
+  .footer-nav a::before { content: ''; width: 12px; height: 0.5px; background: rgba(200,168,112,0.4); flex-shrink: 0; transition: background 0.3s; }
+  .footer-nav a:hover::before { background: var(--or); }
+
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto; padding: 24px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .footer-copy { font-size: 11px; color: rgba(253,250,246,0.3); font-weight: 300; letter-spacing: 0.5px; }
+  .footer-legal { display: flex; gap: 24px; }
+  .footer-legal a { font-size: 11px; color: rgba(253,250,246,0.3); text-decoration: none; font-weight: 300; transition: color 0.3s; }
+  .footer-legal a:hover { color: var(--or); }
+
+  /* ===================== ANIMATIONS ===================== */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 900px) {
+    header { padding: 0 24px; }
+    .logo-sub { display: none; }
+    .nav-desktop { display: none; }
+    .hamburger { display: flex; }
+
+    .hero-content { padding: 100px 24px 100px; max-width: 100%; text-align: left; }
+    .hero-title { font-size: 48px; }
+    .hero-ef { font-size: 200px; right: -20px; opacity: 0.5; }
+    .hero-desc { margin: 0 0 48px; text-align: left; }
+    .hero-actions { justify-content: flex-start; }
+    .btn-primary { padding: 16px 28px; }
+
+    .pourquoi { padding: 80px 24px 60px; }
+    .section-title { font-size: 38px; }
+    .section-title-light { font-size: 38px; }
+    .cards { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+
+    .services { padding: 80px 24px 60px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service-block { padding: 44px 28px; }
+    .service-title { font-size: 32px; }
+
+    .comment { padding: 80px 24px 60px; }
+    .steps { grid-template-columns: 1fr; gap: 48px; }
+    .steps::before { display: none; }
+    .step { padding: 0; }
+    .deplacement { flex-direction: column; text-align: center; padding: 28px 24px; }
+    .deplacement-line { width: 48px; height: 0.5px; }
+
+    .contact { padding: 80px 24px 60px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    .form-row { grid-template-columns: 1fr; }
+    .calendly-inline-widget { height: 550px; }
+
+    footer { padding: 56px 24px 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .footer-brand { grid-column: 1 / -1; }
+
+    .grad-beige-to-blanc, .grad-blanc-to-marron,
+    .grad-marron-to-beige, .grad-beige-to-marron-fonce { height: 60px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 38px; }
+    .section-title { font-size: 32px; }
+    .section-title-light { font-size: 32px; }
+    .service-title { font-size: 28px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .footer-legal { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <a href="#" class="logo">
+    <svg class="logo-icon" viewBox="0 0 42 42">
+      <circle cx="21" cy="21" r="20" fill="#6B4C3B"/>
+      <rect x="18.5" y="9" width="3" height="24" rx="1" fill="#C8C4BE"/>
+      <rect x="8" y="9" width="22" height="3" rx="1" fill="#C8C4BE"/>
+      <rect x="11" y="19.5" width="18" height="2.5" rx="1" fill="#C8A870"/>
+      <rect x="18.5" y="30" width="10" height="3" rx="1" fill="#C8C4BE"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">ELEVAFORM</span>
+      <span class="logo-sub">
+        <span data-lang="fr">BIEN-ÊTRE · RÉÉDUCATION · PERFORMANCE</span>
+        <span data-lang="en">WELL-BEING · REHABILITATION · PERFORMANCE</span>
+      </span>
+    </div>
+  </a>
+
+  <nav class="nav-desktop">
+    <a href="#services"><span data-lang="fr">Services</span><span data-lang="en">Services</span></a>
+    <a href="#comment"><span data-lang="fr">Comment ça marche</span><span data-lang="en">How it works</span></a>
+    <a href="#contact"><span data-lang="fr">Contact</span><span data-lang="en">Contact</span></a>
+    <div class="nav-right">
+      <a href="#contact" class="rdv-btn">
+        <span data-lang="fr">Prendre RDV</span>
+        <span data-lang="en">Book now</span>
+      </a>
+      <div class="lang-switcher">
+        <button id="btn-fr" class="active" onclick="setLang('fr')">FR</button>
+        <button id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Menu mobile -->
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="#services" onclick="toggleMenu()"><span data-lang="fr">Services</span><span data-lang="en">Services</span></a>
+  <a href="#comment" onclick="toggleMenu()"><span data-lang="fr">Comment ça marche</span><span data-lang="en">How it works</span></a>
+  <a href="#contact" onclick="toggleMenu()"><span data-lang="fr">Contact</span><span data-lang="en">Contact</span></a>
+  <div class="mobile-bottom">
+    <a href="#contact" class="rdv-btn-mobile" onclick="toggleMenu()">
+      <span data-lang="fr">Prendre RDV</span>
+      <span data-lang="en">Book now</span>
+    </a>
+    <div class="lang-switcher">
+      <button id="btn-fr2" class="active" onclick="setLang('fr')">FR</button>
+      <button id="btn-en2" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-ef">EF</div>
+  <div class="hero-content">
+    <span class="hero-tag">
+      <span data-lang="fr">Préparation & Récupération · Chirurgie</span>
+      <span data-lang="en">Preparation & Recovery · Surgery</span>
+    </span>
+    <h1 class="hero-title">
+      <span data-lang="fr">Votre corps mérite<br>le meilleur <em>avant</em><br>et <em>après</em>.</span>
+      <span data-lang="en">Your body deserves<br>the best <em>before</em><br>and <em>after</em>.</span>
+    </h1>
+    <p class="hero-desc">
+      <span data-lang="fr">Un accompagnement personnalisé pour préparer votre corps à l'intervention et préserver vos résultats sur le long terme.</span>
+      <span data-lang="en">Personalised coaching to prepare your body for surgery and preserve your results over the long term.</span>
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">
+        <span data-lang="fr">Prendre rendez-vous</span>
+        <span data-lang="en">Book an appointment</span>
+      </a>
+      <a href="#services" class="btn-secondary">
+        <span data-lang="fr">Découvrir les services</span>
+        <span data-lang="en">Discover our services</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Dégradé hero → pourquoi -->
+<div style="height: 220px; background: linear-gradient(to bottom, #4A3228, var(--beige)); margin-top: -1px;"></div>
+
+<!-- ===== POURQUOI ===== -->
+<section class="pourquoi" id="pourquoi">
+  <div class="section-header">
+    <span class="section-tag">
+      <span data-lang="fr">Pourquoi ElevaForm</span>
+      <span data-lang="en">Why ElevaForm</span>
+    </span>
+    <h2 class="section-title">
+      <span data-lang="fr">Un accompagnement pensé<br>pour <em>sublimer</em> votre transformation</span>
+      <span data-lang="en">A programme designed<br>to <em>elevate</em> your transformation</span>
+    </h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-number">01</div>
+      <div class="card-title">
+        <span data-lang="fr">Approche sur mesure</span>
+        <span data-lang="en">Tailored approach</span>
+      </div>
+      <div class="card-line"></div>
+      <p class="card-desc">
+        <span data-lang="fr">Chaque programme est entièrement adapté à votre intervention et à votre profil. Aucun protocole générique — uniquement ce dont votre corps a besoin.</span>
+        <span data-lang="en">Every programme is fully tailored to your procedure and profile. No generic protocols — only what your body truly needs.</span>
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-number">02</div>
+      <div class="card-title">
+        <span data-lang="fr">Expertise pré & post-opératoire</span>
+        <span data-lang="en">Pre & post-operative expertise</span>
+      </div>
+      <div class="card-line"></div>
+      <p class="card-desc">
+        <span data-lang="fr">Une méthodologie pensée pour optimiser chaque phase et sublimer les résultats de l'opération, de la préparation jusqu'à la récupération complète.</span>
+        <span data-lang="en">A methodology designed to optimise every phase and elevate your surgical results, from preparation through to full recovery.</span>
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-number">03</div>
+      <div class="card-title">
+        <span data-lang="fr">Suivi personnalisé</span>
+        <span data-lang="en">Personalised follow-up</span>
+      </div>
+      <div class="card-line"></div>
+      <p class="card-desc">
+        <span data-lang="fr">Un accompagnement continu à chaque étape pour des résultats durables. Vous n'êtes jamais seul dans votre parcours de transformation.</span>
+        <span data-lang="en">Ongoing support at every stage for lasting results. You are never alone on your transformation journey.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Dégradé pourquoi → services -->
+<div style="height: 160px; background: linear-gradient(to bottom, var(--beige), var(--marron));"></div>
+
+<!-- ===== SERVICES ===== -->
+<section class="services" id="services">
+  <div class="section-header">
+    <span class="section-tag">
+      <span data-lang="fr">Mes Services</span>
+      <span data-lang="en">My Services</span>
+    </span>
+    <h2 class="section-title-light">
+      <span data-lang="fr">Deux phases, un seul <em>objectif</em></span>
+      <span data-lang="en">Two phases, one single <em>goal</em></span>
+    </h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="services-grid">
+    <div class="service-block">
+      <div class="service-label">Phase 01</div>
+      <h3 class="service-title">
+        <span data-lang="fr">Séances<br><em>Pré-opératoires</em></span>
+        <span data-lang="en">Pre-operative<br><em>Sessions</em></span>
+      </h3>
+      <ul class="service-list">
+        <li><span data-lang="fr">Bilan physique initial et évaluation de la condition corporelle</span><span data-lang="en">Initial physical assessment and evaluation of body condition</span></li>
+        <li><span data-lang="fr">Renforcement musculaire ciblé pour préparer les zones concernées par l'intervention</span><span data-lang="en">Targeted muscle strengthening to prepare the areas involved in the procedure</span></li>
+        <li><span data-lang="fr">Optimisation cardiovasculaire pour favoriser une meilleure anesthésie et récupération</span><span data-lang="en">Cardiovascular optimisation to support better anaesthesia and recovery</span></li>
+        <li><span data-lang="fr">Conseils en hygiène de vie pour mettre le corps dans les meilleures conditions</span><span data-lang="en">Lifestyle guidance to put the body in the best possible condition</span></li>
+      </ul>
+      <a href="#contact" class="service-cta">
+        <span data-lang="fr">Prendre rendez-vous →</span>
+        <span data-lang="en">Book an appointment →</span>
+      </a>
+    </div>
+    <div class="service-block">
+      <div class="service-label">Phase 02</div>
+      <h3 class="service-title">
+        <span data-lang="fr">Séances<br><em>Post-opératoires</em></span>
+        <span data-lang="en">Post-operative<br><em>Sessions</em></span>
+      </h3>
+      <ul class="service-list">
+        <li><span data-lang="fr">Reprise progressive et sécurisée de l'activité physique</span><span data-lang="en">Progressive and safe return to physical activity</span></li>
+        <li><span data-lang="fr">Travail de mobilité et exercices spécifiques pour stimuler la circulation sanguine des zones concernées et réduire les œdèmes</span><span data-lang="en">Mobility work and targeted exercises to stimulate blood circulation in the affected areas and reduce swelling</span></li>
+        <li><span data-lang="fr">Renforcement musculaire pour maintenir et sublimer les résultats de l'opération</span><span data-lang="en">Muscle strengthening to maintain and elevate the results of your procedure</span></li>
+        <li><span data-lang="fr">Suivi sur le long terme pour pérenniser les résultats</span><span data-lang="en">Long-term follow-up to sustain and preserve your results</span></li>
+      </ul>
+      <a href="#contact" class="service-cta">
+        <span data-lang="fr">Prendre rendez-vous →</span>
+        <span data-lang="en">Book an appointment →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Dégradé services → comment -->
+<div style="height: 160px; background: linear-gradient(to bottom, var(--marron), var(--beige));"></div>
+
+<!-- ===== COMMENT ÇA MARCHE ===== -->
+<section class="comment" id="comment">
+  <div class="section-header">
+    <span class="section-tag">
+      <span data-lang="fr">Comment ça marche</span>
+      <span data-lang="en">How it works</span>
+    </span>
+    <h2 class="section-title">
+      <span data-lang="fr">Un parcours <em>simple</em><br>et structuré</span>
+      <span data-lang="en">A <em>simple</em><br>and structured journey</span>
+    </h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-number"><span>01</span></div>
+      <div class="step-title"><span data-lang="fr">Premier contact</span><span data-lang="en">First contact</span></div>
+      <div class="step-line"></div>
+      <p class="step-desc">
+        <span data-lang="fr">Contactez-moi ou prenez rendez-vous directement en ligne pour un premier échange sur votre projet et vos besoins.</span>
+        <span data-lang="en">Contact me or book directly online for an initial conversation about your goals and needs.</span>
+      </p>
+    </div>
+    <div class="step">
+      <div class="step-number"><span>02</span></div>
+      <div class="step-title"><span data-lang="fr">Bilan initial</span><span data-lang="en">Initial assessment</span></div>
+      <div class="step-line"></div>
+      <p class="step-desc">
+        <span data-lang="fr">Ensemble, nous établissons votre profil, identifions votre intervention et définissons vos objectifs pour construire la meilleure approche.</span>
+        <span data-lang="en">Together, we establish your profile, identify your procedure and define your goals to build the best possible approach.</span>
+      </p>
+    </div>
+    <div class="step">
+      <div class="step-number"><span>03</span></div>
+      <div class="step-title"><span data-lang="fr">Programme personnalisé</span><span data-lang="en">Personalised programme</span></div>
+      <div class="step-line"></div>
+      <p class="step-desc">
+        <span data-lang="fr">Je conçois et assure le suivi de votre programme pré et/ou post-opératoire, adapté à chaque étape de votre parcours.</span>
+        <span data-lang="en">I design and manage your pre and/or post-operative programme, tailored to every stage of your journey.</span>
+      </p>
+    </div>
+  </div>
+  <div class="deplacement">
+    <svg class="deplacement-icon" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" stroke="#C8A870" stroke-width="0.5"/>
+      <path d="M18 10 C13 10 10 14 10 17 C10 22 18 28 18 28 C18 28 26 22 26 17 C26 14 23 10 18 10Z" stroke="#C8A870" stroke-width="1" fill="none"/>
+      <circle cx="18" cy="17" r="3" stroke="#C8A870" stroke-width="1" fill="none"/>
+    </svg>
+    <div class="deplacement-line"></div>
+    <p class="deplacement-text">
+      <span data-lang="fr"><strong>Je me déplace à votre domicile avec mon matériel</strong> — où que vous soyez sur la Côte d'Azur, vos séances se déroulent dans votre environnement, à votre rythme.</span>
+      <span data-lang="en"><strong>I come to your home with all my equipment</strong> — wherever you are on the Côte d'Azur, your sessions take place in your own environment, at your own pace.</span>
+    </p>
+  </div>
+</section>
+
+<!-- Dégradé comment → contact -->
+<div style="height: 160px; background: linear-gradient(to bottom, var(--beige), var(--blanc));"></div>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="section-header">
+    <span class="section-tag">
+      <span data-lang="fr">Contact & Rendez-vous</span>
+      <span data-lang="en">Contact & Booking</span>
+    </span>
+    <h2 class="section-title">
+      <span data-lang="fr">Commençons votre<br>parcours <em>ensemble</em></span>
+      <span data-lang="en">Let's begin your<br>journey <em>together</em></span>
+    </h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p class="contact-intro">
+        <span data-lang="fr">Prenez rendez-vous directement en ligne ou contactez-moi par téléphone ou email. Je vous répondrai dans les plus brefs délais.</span>
+        <span data-lang="en">Book directly online or reach me by phone or email. I will get back to you as soon as possible.</span>
+      </p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 .08h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.19-1.19a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div class="contact-item-content">
+            <span class="contact-item-label"><span data-lang="fr">Téléphone</span><span data-lang="en">Phone</span></span>
+            <span class="contact-item-value">07 61 68 86 65</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="contact-item-content">
+            <span class="contact-item-label">Email</span>
+            <span class="contact-item-value">elevaform.coaching@gmail.com</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="contact-item-content">
+            <span class="contact-item-label"><span data-lang="fr">Déplacement</span><span data-lang="en">Location</span></span>
+            <span class="contact-item-value"><span data-lang="fr">À domicile · Côte d'Azur</span><span data-lang="en">Home visits · Côte d'Azur</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-divider"></div>
+      <div class="or-divider">
+        <span data-lang="fr">ou envoyez un message</span>
+        <span data-lang="en">or send a message</span>
+      </div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label><span data-lang="fr">Prénom</span><span data-lang="en">First name</span></label>
+            <input type="text" placeholder=""/>
+          </div>
+          <div class="form-group">
+            <label><span data-lang="fr">Nom</span><span data-lang="en">Last name</span></label>
+            <input type="text" placeholder=""/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="votre@email.com"/>
+        </div>
+        <div class="form-group">
+          <label><span data-lang="fr">Message</span><span data-lang="en">Message</span></label>
+          <textarea placeholder=""></textarea>
+        </div>
+        <button class="btn-submit">
+          <span data-lang="fr">Envoyer le message</span>
+          <span data-lang="en">Send message</span>
+        </button>
+      </div>
+    </div>
+    <div class="calendly-wrap">
+      <div class="calendly-inline-widget" data-url="https://calendly.com/elevaform?hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=C8A870"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Dégradé contact → footer -->
+<div style="height: 160px; background: linear-gradient(to bottom, var(--blanc), var(--marron-fonce));"></div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">
+        <svg class="footer-logo-icon" viewBox="0 0 42 42">
+          <circle cx="21" cy="21" r="20" fill="#6B4C3B"/>
+          <rect x="18.5" y="9" width="3" height="24" rx="1" fill="#C8C4BE"/>
+          <rect x="8" y="9" width="22" height="3" rx="1" fill="#C8C4BE"/>
+          <rect x="11" y="19.5" width="18" height="2.5" rx="1" fill="#C8A870"/>
+          <rect x="18.5" y="30" width="10" height="3" rx="1" fill="#C8C4BE"/>
+        </svg>
+        <div class="footer-logo-text">
+          <span class="footer-logo-name">ELEVAFORM</span>
+          <span class="footer-logo-sub">
+            <span data-lang="fr">BIEN-ÊTRE · RÉÉDUCATION · PERFORMANCE</span>
+            <span data-lang="en">WELL-BEING · REHABILITATION · PERFORMANCE</span>
+          </span>
+        </div>
+      </a>
+      <p class="footer-desc">
+        <span data-lang="fr">Un accompagnement personnalisé pour préparer votre corps avant l'intervention et préserver vos résultats sur le long terme.</span>
+        <span data-lang="en">Personalised coaching to prepare your body before surgery and preserve your results over the long term.</span>
+      </p>
+      <div class="footer-contact">
+        <a href="tel:0761688665">07 61 68 86 65</a>
+        <a href="mailto:elevaform.coaching@gmail.com">elevaform.coaching@gmail.com</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title"><span data-lang="fr">Navigation</span><span data-lang="en">Navigation</span></div>
+      <nav class="footer-nav">
+        <a href="#services"><span data-lang="fr">Services</span><span data-lang="en">Services</span></a>
+        <a href="#comment"><span data-lang="fr">Comment ça marche</span><span data-lang="en">How it works</span></a>
+        <a href="#contact"><span data-lang="fr">Contact</span><span data-lang="en">Contact</span></a>
+        <a href="#contact"><span data-lang="fr">Prendre rendez-vous</span><span data-lang="en">Book now</span></a>
+      </nav>
+    </div>
+    <div>
+      <div class="footer-col-title"><span data-lang="fr">Services</span><span data-lang="en">Services</span></div>
+      <nav class="footer-nav">
+        <a href="#services"><span data-lang="fr">Séances pré-opératoires</span><span data-lang="en">Pre-operative sessions</span></a>
+        <a href="#services"><span data-lang="fr">Séances post-opératoires</span><span data-lang="en">Post-operative sessions</span></a>
+        <a href="#contact"><span data-lang="fr">Bilan initial</span><span data-lang="en">Initial assessment</span></a>
+        <a href="#contact"><span data-lang="fr">Suivi personnalisé</span><span data-lang="en">Personalised follow-up</span></a>
+      </nav>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 ElevaForm — Rafael Storti. <span data-lang="fr">Tous droits réservés.</span><span data-lang="en">All rights reserved.</span></span>
+    <div class="footer-legal">
+      <a href="#"><span data-lang="fr">Mentions légales</span><span data-lang="en">Legal notice</span></a>
+      <a href="#"><span data-lang="fr">Politique de confidentialité</span><span data-lang="en">Privacy policy</span></a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<script>
+  function setLang(lang) {
+    document.body.classList.remove('fr', 'en');
+    document.body.classList.add(lang);
+
+    document.querySelectorAll('.lang-switcher button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelectorAll('#btn-fr, #btn-fr2').forEach(btn => {
+      if (lang === 'fr') btn.classList.add('active');
+    });
+    document.querySelectorAll('#btn-en, #btn-en2').forEach(btn => {
+      if (lang === 'en') btn.classList.add('active');
+    });
+  }
+
+  function toggleMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const navMobile = document.getElementById('nav-mobile');
+    hamburger.classList.toggle('open');
+    navMobile.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
