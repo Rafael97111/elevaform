@@ -1,3 +1,9 @@
+// ─────────────────────────────────────────────────────────────
+// Layout racine — s'applique à toutes les pages du site
+// Charge les polices, définit les métadonnées SEO (titre, description,
+// réseaux sociaux) et enveloppe le contenu dans la structure HTML de base.
+// ─────────────────────────────────────────────────────────────
+
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Jost, JetBrains_Mono } from 'next/font/google'
 import './globals.css'

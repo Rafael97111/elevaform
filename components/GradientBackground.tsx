@@ -1,8 +1,17 @@
 'use client'
 
+// ─────────────────────────────────────────────────────────────
+// Fond dégradé animé au scroll
+// Deux calques de couleur très subtils (opacité 4%) positionnés
+// en arrière-plan fixe. En haut de page, une teinte dorée domine.
+// En bas, une teinte cuir prend le dessus. La transition est
+// pilotée en temps réel par la position de défilement du visiteur.
+// ─────────────────────────────────────────────────────────────
+
 import { useEffect, useState } from 'react'
 
 export default function GradientBackground() {
+  // "progress" va de 0 (haut de page) à 1 (bas de page)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -13,6 +22,7 @@ export default function GradientBackground() {
       setProgress(max > 0 ? window.scrollY / max : 0)
     }
 
+    // On synchronise le dégradé avec le scroll, frame par frame (60fps)
     function onScroll() {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(update)

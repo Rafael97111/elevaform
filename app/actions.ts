@@ -1,22 +1,34 @@
+// ─────────────────────────────────────────────────────────────
+// Action serveur : formulaire de contact
+// Quand un visiteur envoie un message depuis la section Contact,
+// cette fonction s'exécute côté serveur et transmet l'email
+// directement à Rafael via le service Resend.
+// ─────────────────────────────────────────────────────────────
+
 'use server'
 
 import { Resend } from 'resend'
 
+// Connexion au service d'envoi d'emails (clé stockée côté serveur uniquement)
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export type ContactResult = { success: boolean; error: string }
 
 export async function sendContactMessage(formData: FormData): Promise<ContactResult> {
   try {
+    // Récupération et nettoyage des champs du formulaire
     const firstName = formData.get('firstName')?.toString().trim() ?? ''
     const lastName = formData.get('lastName')?.toString().trim() ?? ''
     const email = formData.get('email')?.toString().trim() ?? ''
     const message = formData.get('message')?.toString().trim() ?? ''
 
+    // Prénom et email sont obligatoires
     if (!firstName || !email) {
       return { success: false, error: 'Veuillez remplir les champs obligatoires.' }
     }
 
+    // Envoi de l'email à Rafael avec les informations du visiteur
+    // "replyTo" permet à Rafael de répondre directement au visiteur en un clic
     await resend.emails.send({
       from: 'ElevaForm <onboarding@resend.dev>',
       to: 'elevaform.coaching@gmail.com',
