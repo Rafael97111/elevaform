@@ -8,7 +8,6 @@
 
 import GradientBackground from '@/components/GradientBackground'
 import Hero from '@/components/Hero'
-import SectionTransition from '@/components/SectionTransition'
 import Pourquoi from '@/components/Pourquoi'
 import KeywordBand from '@/components/KeywordBand'
 import Services from '@/components/Services'
@@ -26,7 +25,6 @@ export default function Page() {
       <div id="scroll-thread" aria-hidden="true" />
       <main id="app">
         <Hero />
-        <SectionTransition />
         <Pourquoi />
         <KeywordBand />
         <Services />
