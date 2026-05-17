@@ -35,9 +35,23 @@
    ============================================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+/* Card stack */
+.card-sticky {
+  position: sticky;
+  top: 0;
+}
+@media (max-width: 767px) {
+  /* Card 1 (Hero, 100vh) reste sticky sur mobile : crée l'effet "carte 2 passe par-dessus" */
+  .card-sticky-hero { position: sticky; top: 0; }
+  /* Cartes trop hautes pour sticky sur mobile : défilement normal */
+  .card-sticky:not(.card-sticky-hero) { position: relative; }
+  /* Juste 1px pour éviter tout gap entre cartes, sans faux overlap statique */
+  .card-over { margin-top: -1px; }
+}
 body {
   font-family: var(--font-sans);
-  background: #1a0f08;
+  background: var(--paper);
   color: var(--ink);
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -360,6 +374,41 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 60vh;
   min-height: 360px;
 }
+.hero-img-sk {
+  position: absolute;
+  border-radius: 4px;
+  background: rgba(58,36,24,0.1);
+  overflow: hidden;
+  z-index: 0;
+}
+.hero-img-sk--main {
+  top: 5%; right: -8%;
+  width: 75%;
+  aspect-ratio: 3/4;
+}
+.hero-img-sk--secondary {
+  bottom: 8%; left: -5%;
+  width: 50%;
+  aspect-ratio: 4/5;
+}
+.hero-img-sk::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%);
+  animation: skeletonFlash 1.6s ease-in-out infinite;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.hero-images:has(.hero-img-clip.in) .hero-img-sk::after {
+  animation: none;
+  opacity: 0;
+}
+.hero-img-clip {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
 .hero-img-main, .hero-img-secondary {
   position: absolute;
   overflow: hidden;
@@ -381,7 +430,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   width: 50%;
   aspect-ratio: 4/5;
   z-index: 1;
-  border: 4px solid var(--paper);
 }
 
 .hero-scroll-cue {
@@ -645,7 +693,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-bottom: 18px;
   line-height: 1.4;
 }
-.pourquoi-card p { font-size: 14.5px; line-height: 1.85; color: var(--muted); font-weight: 300; }
+.pourquoi-card p { font-size: 16px; line-height: 1.85; color: var(--muted); font-weight: 300; }
 
 /* ============================================================
    KEYWORD BAND
@@ -725,6 +773,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   overflow: hidden;
   transition: all 0.5s cubic-bezier(.2,.7,.2,1);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .service-block:hover { background: rgba(253,249,241,0.06); border-color: rgba(212,168,95,0.5); transform: translateY(-6px); }
 
@@ -733,9 +783,44 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   height: 280px;
   position: relative;
   overflow: hidden;
+  clip-path: inset(100% 0 0 0);
+}
+.service-block.in .service-img {
+  animation: fxRevealImgUp 1.4s cubic-bezier(.7,0,.3,1) forwards;
 }
 .service-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
 .service-block:hover .service-img img { transform: scale(1.05); }
+.service-img--maison img { object-position: center 75%; }
+
+/* Skeleton : fond + flash sur .service-block pour ne pas être clippé par le clip-path de .service-img */
+.service-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 280px;
+  background: rgba(58,36,24,0.08);
+  z-index: 0;
+  pointer-events: none;
+}
+.service-block::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 280px;
+  background: linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%);
+  animation: skeletonFlash 1.6s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.service-block.in::after {
+  animation: none;
+  opacity: 0;
+}
+@keyframes skeletonFlash {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
 
 .service-phase {
   position: absolute;
@@ -748,21 +833,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background: var(--gold-bright);
   padding: 6px 12px;
   border-radius: 100px;
-  z-index: 2;
+  z-index: 10;
 }
 .service-num-bg {
   position: absolute;
-  bottom: -30px; right: -10px;
+  bottom: -5px; right: 10px;
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 200px;
-  color: rgba(253,249,241,0.1);
+  color: rgba(0, 0, 0, 0.207);
   line-height: 0.85;
   font-weight: 300;
   pointer-events: none;
   z-index: 2;
 }
-.service-body { padding: 44px 36px 40px; position: relative; }
+.service-body { padding: 44px 36px 40px; position: relative; display: flex; flex-direction: column; flex: 1; }
+.service-body .btn { margin-top: auto; }
 .service-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -788,7 +874,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .service-list { list-style: none; display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
 .service-list li {
   display: flex; align-items: flex-start; gap: 14px;
-  font-size: 14px; line-height: 1.7;
+  font-size: 16px; line-height: 1.7;
   color: rgba(253,249,241,0.8); font-weight: 300;
 }
 .service-list li::before {
@@ -842,7 +928,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .imageband-cite {
   font-family: var(--font-mono);
   font-size: 10px; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--gold-bright);
+  text-transform: uppercase; color: var(--paper);
   display: flex; align-items: center; gap: 12px;
 }
 .imageband-cite::before { content: ''; width: 28px; height: 0.5px; background: var(--gold-bright); }
@@ -851,7 +937,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    COMMENT ÇA MARCHE
    ============================================================ */
 .comment {
-  background: var(--paper-warm);
+  background: transparent;
   padding: 110px 32px 90px;
   position: relative; overflow: hidden;
 }
@@ -905,7 +991,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .step-title { font-family: var(--font-sans); font-size: 13px; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--leather-deep); margin-bottom: 14px; }
 .step-line { width: 28px; height: 0.5px; background: var(--gold); margin: 0 auto 14px; }
-.step-desc { font-size: 14px; line-height: 1.8; color: var(--muted); font-weight: 300; }
+.step-desc { font-size: 16px; line-height: 1.8; color: var(--muted); font-weight: 300; }
 
 .deplacement {
   max-width: 1100px;
@@ -930,14 +1016,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .deplacement-icon svg { width: 20px; height: 20px; stroke: var(--gold-deep); }
 .deplacement-divider { width: 0.5px; height: 44px; background: rgba(212,168,95,0.4); flex-shrink: 0; }
-.deplacement-text { font-size: 14.5px; color: var(--leather-deep); font-weight: 300; line-height: 1.7; flex: 1; }
+.deplacement-text { font-size: 16px; color: var(--leather-deep); font-weight: 300; line-height: 1.7; flex: 1; }
 .deplacement-text strong { font-weight: 500; }
 
 /* ============================================================
    CONTACT
    ============================================================ */
 .contact {
-  background: var(--paper);
+  background: transparent;
   padding: 110px 32px 90px;
   position: relative; overflow: hidden;
 }
@@ -1082,7 +1168,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    ============================================================ */
 .sticky-cta {
   position: fixed;
-  bottom: 16px; left: 50%; transform: translateX(-50%) translateY(80px);
+  bottom: 16px; left: 50%; transform: translateX(-50%);
   z-index: 150;
   background: linear-gradient(180deg, var(--gold-bright), var(--gold));
   color: var(--leather-deep);
@@ -1097,16 +1183,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   letter-spacing: 2.5px;
   text-transform: uppercase;
   font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.5s, transform 0.5s cubic-bezier(.2,.7,.2,1);
-  pointer-events: none;
   cursor: pointer;
   border: none;
 }
-.sticky-cta.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.sticky-cta.show { display: flex; }
 .sticky-cta-icon { width: 36px; height: 36px; background: rgba(58,36,24,0.18); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .sticky-cta-icon svg { width: 16px; height: 16px; stroke: var(--leather-deep); }
-.sticky-cta-meta { display: flex; flex-direction: column; gap: 2px; line-height: 1; }
+.sticky-cta-meta { display: flex; flex-direction: column; gap: 2px; line-height: 1; white-space: nowrap; }
 .sticky-cta-meta small { font-size: 8.5px; letter-spacing: 2px; font-weight: 400; color: rgba(58,36,24,0.7); text-transform: uppercase; }
 
 /* ============================================================
@@ -1228,6 +1311,8 @@ body.booking-open { overflow: hidden; }
   .section-transition-e { font-size: clamp(220px, 80vw, 340px); bottom: -22%; }
   .pourquoi-grid { grid-template-columns: 1fr; gap: 18px; }
   .services-grid { grid-template-columns: 1fr; gap: 24px; }
+  .service-body { padding: 32px 24px 28px; }
+  .service-body .btn { width: 100%; justify-content: center; }
   .service-title { font-size: 32px; }
   .steps { grid-template-columns: 1fr; gap: 48px; margin-bottom: 40px; }
   .steps::before { display: none; }
