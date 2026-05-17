@@ -73,7 +73,7 @@ export default function Services() {
           <div className="service-img" data-fx="reveal-img-up">
             <span className="service-phase">Phase 02</span>
             <Image
-              src="https://images.unsplash.com/photo-1540206395-68808572332f?w=900&auto=format&fit=crop&q=80"
+              src="/image-kb-maison.png"
               alt="Récupération post-opératoire"
               width={900}
               height={600}
