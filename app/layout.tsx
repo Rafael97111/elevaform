@@ -31,16 +31,25 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'ElevaForm — Bien-être · Rééducation · Performance',
+  title: 'ElevaForm: Bien-être · Rééducation · Performance',
   description:
     "Accompagnement pré et post-opératoire personnalisé avec Rafael Storti, coach diplômé d'état sur la Côte d'Azur.",
   keywords: ['préparation chirurgie', 'récupération post-opératoire', 'coach sportif', "Côte d'Azur", 'ElevaForm'],
+  metadataBase: new URL('https://elevaform.fr'),
   openGraph: {
-    title: 'ElevaForm — Coaching pré & post-opératoire',
+    title: 'ElevaForm, Coaching pré & post-opératoire',
     description:
       "Un accompagnement personnalisé pour préparer votre corps à l'intervention et préserver vos résultats sur le long terme.",
+    url: 'https://elevaform.fr',
+    siteName: 'ElevaForm',
     locale: 'fr_FR',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ElevaForm, Coaching pré & post-opératoire',
+    description:
+      "Un accompagnement personnalisé pour préparer votre corps à l'intervention et préserver vos résultats sur le long terme.",
   },
 }
 

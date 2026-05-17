@@ -28,13 +28,14 @@ export default function Services() {
       </div>
       <div className="services-grid">
         <article className="service-block" data-fx="fade-up">
-          <div className="service-img" data-fx="reveal-img-up">
-            <span className="service-phase">Phase 01</span>
+          <span className="service-phase">Phase 01</span>
+          <div className="service-img">
             <Image
-              src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&auto=format&fit=crop&q=80"
+              src="/service-pre-op.jpg"
               alt="Préparation pré-opératoire"
-              width={900}
-              height={600}
+              width={600}
+              height={400}
+              priority
             />
             <span className="service-num-bg">01</span>
           </div>
@@ -59,10 +60,7 @@ export default function Services() {
                 Conseils en hygiène de vie pour mettre le corps dans les meilleures conditions
               </li>
             </ul>
-            <button
-              className="btn btn-gold"
-              data-open-booking
-            >
+            <button className="btn btn-gold" data-open-booking>
               Prendre rendez-vous
               <ArrowIcon />
             </button>
@@ -70,13 +68,14 @@ export default function Services() {
         </article>
 
         <article className="service-block" data-fx="fade-up">
-          <div className="service-img" data-fx="reveal-img-up">
-            <span className="service-phase">Phase 02</span>
+          <span className="service-phase">Phase 02</span>
+          <div className="service-img service-img--maison">
             <Image
-              src="/image-kb-maison.png"
+              src="/image-kb-maison.jpg"
               alt="Récupération post-opératoire"
-              width={900}
-              height={600}
+              width={600}
+              height={400}
+              priority
             />
             <span className="service-num-bg">02</span>
           </div>
@@ -98,10 +97,7 @@ export default function Services() {
               </li>
               <li>Suivi sur le long terme pour pérenniser les résultats</li>
             </ul>
-            <button
-              className="btn btn-gold"
-              data-open-booking
-            >
+            <button className="btn btn-gold" data-open-booking>
               Prendre rendez-vous
               <ArrowIcon />
             </button>

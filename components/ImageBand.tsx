@@ -5,7 +5,7 @@ export default function ImageBand() {
     <section className="imageband">
       <div className="imageband-img" data-parallax="0.15">
         <Image
-          src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=1600&auto=format&fit=crop&q=80"
+          src="/imageband.jpg"
           alt="Rafael Storti se déplace à domicile sur la Côte d'Azur"
           width={1600}
           height={900}

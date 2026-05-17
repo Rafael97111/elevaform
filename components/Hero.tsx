@@ -1,6 +1,7 @@
 import Image from 'next/image'
-import Header from './Header'
 
+// Header est rendu en dehors du CardStack pour éviter que
+// position:fixed soit cassé par les transforms CSS du parent
 export default function Hero() {
   return (
     <section className="hero" id="top">
@@ -8,8 +9,6 @@ export default function Hero() {
       <span className="hero-watermark" aria-hidden="true">
         e
       </span>
-
-      <Header />
 
       <div className="hero-inner">
         <div className="hero-content">
@@ -55,23 +54,28 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="hero-images" data-fx="reveal-img">
-          <div className="hero-img-main">
-            <Image
-              src="https://images.unsplash.com/photo-1591291621164-2c6367723315?w=900&auto=format&fit=crop&q=80"
-              alt="Matériel d'entraînement à domicile"
-              width={900}
-              height={1100}
-              priority
-            />
-          </div>
-          <div className="hero-img-secondary">
-            <Image
-              src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&auto=format&fit=crop&q=80"
-              alt="Tapis et accessoires à domicile"
-              width={600}
-              height={400}
-            />
+        <div className="hero-images">
+          <div className="hero-img-sk hero-img-sk--main" aria-hidden="true" />
+          <div className="hero-img-sk hero-img-sk--secondary" aria-hidden="true" />
+          <div className="hero-img-clip" data-fx="reveal-img">
+            <div className="hero-img-main">
+              <Image
+                src="/hero-main.jpg"
+                alt="Matériel d'entraînement à domicile"
+                width={900}
+                height={1100}
+                priority
+              />
+            </div>
+            <div className="hero-img-secondary">
+              <Image
+                src="/hero-secondary.jpg"
+                alt="Matériel de fitness à domicile"
+                width={600}
+                height={400}
+                priority
+              />
+            </div>
           </div>
         </div>
 
