@@ -48,10 +48,6 @@ export default function Hero() {
               Découvrir les services
             </a>
           </div>
-          <div className="hero-scroll-cue" data-fx="fade-up">
-            <span className="cue-line" />
-            défiler pour découvrir
-          </div>
         </div>
 
         <div className="hero-images">
@@ -80,6 +76,10 @@ export default function Hero() {
         </div>
 
         <div className="hero-tagline">Rafael Storti · coach diplômé d&apos;état</div>
+      </div>
+      <div className="hero-scroll-cue" data-fx="fade-up">
+        <span className="cue-line" />
+        défiler pour découvrir
       </div>
     </section>
   )
