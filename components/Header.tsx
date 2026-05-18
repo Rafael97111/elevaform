@@ -1,7 +1,17 @@
+'use client'
+
 export default function Header() {
   return (
     <header className="app-header">
-      <a href="#top" className="app-logo">
+      <a
+        href="#top"
+        className="app-logo"
+        onClick={(e) => {
+          e.preventDefault()
+          history.replaceState(null, '', window.location.pathname)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+      >
         <span className="app-logo-stamp">E</span>
         <span className="app-logo-text">
           <span className="app-logo-name">ELEVAFORM</span>

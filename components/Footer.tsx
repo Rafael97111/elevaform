@@ -1,9 +1,19 @@
+'use client'
+
 export default function Footer() {
   return (
     <footer className="app-footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <a href="#top" className="footer-logo">
+          <a
+            href="#top"
+            className="footer-logo"
+            onClick={(e) => {
+              e.preventDefault()
+              history.replaceState(null, '', window.location.pathname)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+          >
             <span className="app-logo-stamp">E</span>
             <span className="app-logo-text">
               <span className="app-logo-name">ELEVAFORM</span>

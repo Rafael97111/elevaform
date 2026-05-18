@@ -163,7 +163,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(212,168,95,0.55), inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow: 0 14px 28px rgba(212,168,95,0.45), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 .btn-gold::before {
   content: '';
@@ -183,16 +183,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn-leather:hover { background: var(--leather-deep); transform: translateY(-2px); }
 
 .btn-ghost {
-  color: rgba(253,249,241,0.85);
-  border-bottom: 0.5px solid rgba(253,249,241,0.4);
-  padding: 4px 0;
-  font-size: 11px;
-  letter-spacing: 2.5px;
-  background: transparent;
-  border-radius: 0;
-  transition: color 0.3s;
+  color: rgba(253,249,241,0.8);
+  border: 0.5px solid rgba(253,249,241,0.35);
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  transition: all 0.3s;
 }
-.btn-ghost:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
+.btn-ghost:hover { color: var(--gold-bright); border-color: rgba(212,168,95,0.7); background: rgba(212,168,95,0.08); }
 
 /* ============================================================
    SCROLL REVEAL ANIMATIONS
@@ -364,7 +361,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
   flex-wrap: wrap;
   margin-bottom: 40px;
 }
@@ -433,6 +430,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero-scroll-cue {
+  position: absolute;
+  bottom: 72px;
+  left: 40px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -441,6 +441,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 9.5px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 3;
 }
 .cue-line {
   width: 32px; height: 0.5px;
@@ -1067,7 +1069,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .contact-info { display: flex; flex-direction: column; gap: 40px; }
 .contact-intro { font-size: 15.5px; line-height: 1.85; color: var(--muted); font-weight: 300; }
 .contact-items { display: flex; flex-direction: column; gap: 24px; }
-.contact-item { display: flex; align-items: flex-start; gap: 18px; }
+.contact-item { display: flex; align-items: flex-start; gap: 18px; text-decoration: none; cursor: pointer; transition: opacity 0.2s; }
+a.contact-item:hover { opacity: 0.75; }
 .contact-item-icon {
   width: 44px; height: 44px;
   border: 0.5px solid var(--gold); border-radius: 50%;

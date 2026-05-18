@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useMotionValueEvent } from 'framer-motion'
 import Hero from './Hero'
 import Pourquoi from './Pourquoi'
@@ -24,35 +24,16 @@ export default function CardStackAll() {
   const { scrollYProgress: p4 } = useScroll({ target: ref4, offset: ['start end', 'start start'] })
 
   // Fake sticky pour Card 2 sur mobile : maintient la carte visible pendant que Card 3 slide par dessus
-  const c2y  = useMotionValue(0)  // translateY externe (+stuck = reste en haut)
-  const c2iy = useMotionValue(0)  // translateY interne (-stuck = contenu défile normalement)
-  const card2Top = useRef(0)
-
-  useEffect(() => {
-    const measure = () => {
-      if (ref2.current) {
-        card2Top.current = ref2.current.getBoundingClientRect().top + window.scrollY
-      }
-    }
-    measure()
-    window.addEventListener('resize', measure, { passive: true })
-    return () => window.removeEventListener('resize', measure)
-  }, [])
+  const c2y = useMotionValue(0)
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     if (window.innerWidth >= 768 || !ref2.current) {
-      c2y.set(0); c2iy.set(0); return
+      c2y.set(0); return
     }
-    const top = card2Top.current
+    const top = ref2.current.getBoundingClientRect().top + y - c2y.get()
     const h = ref2.current.offsetHeight
-    const wh = window.innerHeight
-    // Inner scroll range: montrer tout le contenu de Card 2
-    const maxInner = Math.max(0, h - wh)
-    // Outer sticky range: Card 2 reste fixée jusqu'à ce que Card 3 la recouvre entièrement
-    const maxOuter = h
     const stuck = Math.max(0, y - top)
-    c2y.set(Math.min(maxOuter, stuck))
-    c2iy.set(-Math.min(maxInner, stuck))
+    c2y.set(Math.min(h, stuck))
   })
 
   // Carte 1 (Hero) : recule et s'assombrit quand Carte 2 entre
@@ -101,7 +82,7 @@ export default function CardStackAll() {
           y: c2y,
         }}
       >
-        <motion.div style={{ scale: scale2, y: c2iy, transformOrigin: 'top center' }}>
+        <motion.div style={{ scale: scale2, transformOrigin: 'top center' }}>
           <Pourquoi />
           <KeywordBand />
           <motion.div
